@@ -1,36 +1,39 @@
-const { app, BrowserWindow, dialog } = require('electron')
-const { exec } = require('child_process')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path');
 
+//TODO
+app.commandLine.appendSwitch('ignore-certificate-errors')
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
-    height: 600
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      webSecurity: false //TODO
+    }
   })
 
-  win.loadFile('index.html')
-}
-
-const updateClientDesktop = () => {
-  const updateBatchPath = path.join(__dirname, './update.sh');
-
-  exec(`sh ${updateBatchPath} http://example.com`,
-    (error, stdout, stderr) => {
-        console.log(stdout);
-        console.log(stderr);
-
-        if (error !== null) {
-          console.log(`exec error: ${error}`);
-          dialog.showMessageBox({
-              title: 'Title',
-              type: 'warning',
-              message: 'Error occured.\r\n' + error
-          });
-        }
-    })
+  win.loadFile('./src/pages/index.html')
+  win.webContents.openDevTools()
 }
 
 app.whenReady().then(() => {
   createWindow()
-  updateClientDesktop()
+})
+
+ipcMain.on('get-app-path', (event, args) => {
+  event.returnValue = app.getAppPath()
+})
+
+ipcMain.on('get-parent-root-path', (event, args) => {
+  console.log(process.env.NODE_ENV)
+  if (process.env.NODE_ENV == 'development') {
+    event.returnValue = path.join(app.getAppPath(), '/..')
+  } else {
+    event.returnValue = process.platform === 'win32' ?
+      path.join(app.getAppPath(), '/../../../..') :
+      path.join(app.getAppPath(), '/../../../../..')
+  }
 })
