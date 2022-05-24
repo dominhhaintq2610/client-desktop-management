@@ -2,11 +2,28 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Inter" rel="stylesheet">
+    <link rel = "stylesheet"  href = "../styles/common.css" />
+    <link rel = "stylesheet"  href = "../../node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
+    <script defer src="../../node_modules/@fortawesome/fontawesome-free/js/all.min.js"></script>
     <title>Client Desktop Management</title>
   </head>
   <body>
-    <h1>Client Desktop Management</h1>
-    <div class="content"></div>
+    <nav class="navbar">
+      <div>
+        <img src="../images/logo.png" alt="logo" width="136px" height="34px">
+      </div>
+      <div>
+        <button class="border-0 btn-close-app" id="close-btn">
+          <i class="far fa-times-circle icon-close"></i>
+        </button>
+      </div>
+    </nav>
+    <div class="main">
+      <div class="title">Version Control</div>
+      <div class="daily-schedule"></div>
+      <div class="content"></div>
+    </div>
     <script src="../js/index.js"></script>
   </body>
 </html>

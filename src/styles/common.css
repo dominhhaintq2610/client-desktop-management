@@ -1,0 +1,42 @@
+body {
+  height: calc(100vh - 16px);
+  margin: 0;
+  background: #ccc;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 53px;
+  background: #e6e6e6;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.3);
+  padding: 8px;
+}
+
+.btn-close-app {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.main {
+  padding: 0 8px 8px;
+}
+
+.title, .daily-schedule {
+  width: 100%;
+  text-align: center;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 8px 0;
+}
+
+.content {
+  text-align: center;
+  margin-top: 60px;
+}

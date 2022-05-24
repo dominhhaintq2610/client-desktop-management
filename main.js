@@ -1,12 +1,15 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Tray } = require('electron')
 const path = require('path');
+
+let win = null;
 
 //TODO
 app.commandLine.appendSwitch('ignore-certificate-errors')
 const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  win = new BrowserWindow({
+    width: 500,
+    height: 320,
+    frame: false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -16,6 +19,7 @@ const createWindow = () => {
   })
 
   win.loadFile('./src/pages/index.html')
+  win.hide()
   
   if (process.env.NODE_ENV == 'development') {
     win.webContents.openDevTools()
@@ -24,6 +28,10 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow()
+})
+
+app.on('activate', () => {
+  win.show()
 })
 
 ipcMain.on('get-app-path', (event, args) => {
@@ -38,4 +46,8 @@ ipcMain.on('get-parent-root-path', (event, args) => {
       path.join(app.getAppPath(), '/../../..') :
       path.join(app.getAppPath(), '/../../../../..')
   }
+})
+
+ipcMain.on('close-app', (evt, arg) => {
+  win.hide();
 })

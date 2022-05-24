@@ -1,7 +1,6 @@
 const fs = require('fs')
 const request = require('request')
 const { exec } = require('child_process')
-const { ipcRenderer } = require('electron')
 const api = require('../common/api')
 const config = require('../common/config')
 
@@ -11,9 +10,7 @@ const CLIENT_FOLDER_NAME = 'Client-Desktop-win32-x64'
 const MANAGE_FOLDER_NAME = 'Client-Desktop-Management-win32-x64'
 const CLIENT_FOLDER_PATH = `${PARENT_FOLDER_PATH}/${CLIENT_FOLDER_NAME}`
 const MANAGE_FOLDER_PATH = `${PARENT_FOLDER_PATH}/${MANAGE_FOLDER_NAME}`
-console.log(ipcRenderer.sendSync('get-app-path'))
-console.log(CLIENT_FOLDER_PATH)
-console.log(MANAGE_FOLDER_PATH)
+
 const CLIENT_ZIP_TMP_NAME = 'Client-Desktop-win32-x64.zip'
 
 const INFO_FILE_PATH = `${CLIENT_FOLDER_PATH}/resources/app/info.ini`
@@ -27,6 +24,7 @@ let downloadUrl = ''
 let runWhenStartApp = true
 
 window.onload = function() {
+  printSchedule()
   checkUpdate()
 }
 
@@ -41,7 +39,7 @@ function checkUpdate() {
   setTimeout(checkUpdate, 60000)
 }
 
-function onSchedule() {
+function getAutoUpdateTime() {
   let autoUpdateTime = config.autoUpdateTime
 
   if (fs.existsSync(CHECK_UPDATE_TIME_PATH)) {
@@ -53,12 +51,22 @@ function onSchedule() {
     }
   }
 
+  return autoUpdateTime
+}
+
+function onSchedule() {
   const currentTime = new Date();
   const currentHour = currentTime.getHours().toString().padStart(2, '0');
   const currentMinute = currentTime.getMinutes().toString().padStart(2, '0');
-  console.log([currentHour, currentMinute].join(':'))
+  
+  return getAutoUpdateTime() === [currentHour, currentMinute].join(':')
+}
 
-  return [currentHour, currentMinute].join(':') === autoUpdateTime
+function printSchedule() {
+  let time = getAutoUpdateTime()
+  document.getElementsByClassName('daily-schedule')[0].textContent = `Daily schedule: ${time}`
+
+  setTimeout(printSchedule, 1000)
 }
 
 function updateVersion(step) {
@@ -191,7 +199,7 @@ function openClientDesktop() {
       return;
     }
 
-    setContent("Start successfully!")
+    setContent("Update successfully!")
   });
 }
 

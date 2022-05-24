@@ -1,7 +1,6 @@
 const fs = require('fs')
 const request = require('request')
 const { exec } = require('child_process')
-const { ipcRenderer } = require('electron')
 const api = require('../common/api')
 const config = require('../common/config')
 
@@ -13,7 +12,6 @@ const CLIENT_FOLDER_PATH = `${PARENT_FOLDER_PATH}/${CLIENT_FOLDER_NAME}`
 const MANAGE_FOLDER_PATH = `${PARENT_FOLDER_PATH}/${MANAGE_FOLDER_NAME}`
 
 const CLIENT_ZIP_TMP_NAME = 'Client-Desktop-darwin-x64.zip'
-const CLIENT_FOLDER_TMP_NAME = 'Client-Desktop-darwin-x64'
 const BACKUP_FILE_NAME = 'Client-Desktop-darwin-x64-bak.zip'
 
 const INFO_FILE_PATH = `${CLIENT_FOLDER_PATH}/Client-Desktop.app/Contents/Resources/app/info.ini`
@@ -22,26 +20,27 @@ const INFO_FILE_TMP_PATH = `${MANAGE_FOLDER_PATH}/info.ini`
 const PACKAGE_JSON_PATH = `${CLIENT_FOLDER_PATH}/Client-Desktop.app/Contents/Resources/app/package.json`
 const CHECK_UPDATE_TIME_PATH = `${MANAGE_FOLDER_PATH}/env.json`
 
-let macStep = 1
+let updateStep = 1
 let downloadUrl = ''
 let runWhenStartApp = true
 
 window.onload = function() {
+  printSchedule()
   checkUpdate()
 }
 
 function checkUpdate() {
   console.log('check update')
   if (runWhenStartApp || onSchedule()) {
-    macStep = 1
+    updateStep = 1
     runWhenStartApp = false
-    updateVersion(macStep)
+    updateVersion(updateStep)
   }
 
   setTimeout(checkUpdate, 60000)
 }
 
-function onSchedule() {
+function getAutoUpdateTime() {
   let autoUpdateTime = config.autoUpdateTime
 
   if (fs.existsSync(CHECK_UPDATE_TIME_PATH)) {
@@ -53,12 +52,22 @@ function onSchedule() {
     }
   }
 
+  return autoUpdateTime
+}
+
+function onSchedule() {
   const currentTime = new Date();
   const currentHour = currentTime.getHours().toString().padStart(2, '0');
   const currentMinute = currentTime.getMinutes().toString().padStart(2, '0');
   
-  console.log([currentHour, currentMinute].join(':'))
-  return [currentHour, currentMinute].join(':') === autoUpdateTime
+  return getAutoUpdateTime() === [currentHour, currentMinute].join(':')
+}
+
+function printSchedule() {
+  let time = getAutoUpdateTime()
+  document.getElementsByClassName('daily-schedule')[0].textContent = `Daily schedule: ${time}`
+
+  setTimeout(printSchedule, 1000)
 }
 
 function updateVersion(step) {
@@ -78,7 +87,7 @@ function updateVersion(step) {
       return
     case 5:
       // backup()
-      updateVersion(++macStep)
+      updateVersion(++updateStep)
       return
     case 6:
       unzip()
@@ -109,7 +118,7 @@ function checkVersion() {
       } else {
         downloadUrl = response.data.url
         console.log(downloadUrl)
-        updateVersion(++macStep)
+        updateVersion(++updateStep)
       }
     })
     .catch(error => {
@@ -125,7 +134,7 @@ function killClientDesktop() {
 
   exec(`pkill -x Client-Desktop`)
 
-  updateVersion(++macStep)
+  updateVersion(++updateStep)
 }
 
 function download() {
@@ -159,7 +168,7 @@ function download() {
 
   req.on('end', function() {
     setContent("Download successfully!")
-    updateVersion(++macStep)
+    updateVersion(++updateStep)
   })
 }
 
@@ -173,12 +182,12 @@ function unzip() {
 
   exec(`unzip -o ${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME} -d ${PARENT_FOLDER_PATH}`, (error) => {
     if (error) {
-      console.error(`exec error: ${error}`);
-      return;
+      console.error(`exec error: ${error}`)
+      return
     }
 
     setContent("Unzip successfully!")
-    updateVersion(++macStep)
+    updateVersion(++updateStep)
   });
 }
 
@@ -191,7 +200,7 @@ function openClientDesktop() {
       return;
     }
 
-    setContent("Start successfully!")
+    setContent("Update successfully!")
   });
 }
 
@@ -203,7 +212,7 @@ function removeFiles() {
       console.error(`exec error: ${error}`);
     }
 
-    updateVersion(++macStep)
+    updateVersion(++updateStep)
   });
 }
 
@@ -216,7 +225,7 @@ function copyIniFile() {
       return;
     }
 
-    updateVersion(++macStep)
+    updateVersion(++updateStep)
   });
 }
 
@@ -229,7 +238,7 @@ function revertIniFile() {
       return
     }
 
-    updateVersion(++macStep)
+    updateVersion(++updateStep)
   })
 }
 
@@ -242,7 +251,7 @@ function backup() {
       return
     }
 
-    updateVersion(++macStep)
+    updateVersion(++updateStep)
   })
 }
 
