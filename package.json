@@ -7,7 +7,8 @@
     "start": "SET NODE_ENV=development&electron .",
     "start:mac": "NODE_ENV=development electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:mac": "electron-packager . Client-Desktop-Management --overwrite --out=dist/osx --platform=darwin --arch=x64"
+    "build:mac": "electron-packager . Client-Desktop-Management --overwrite --out=dist/osx --platform=darwin --arch=x64",
+    "build:win": "electron-packager . Client-Desktop-Management --overwrite --out=dist/win --platform=win32 --arch=x64"
   },
   "author": "",
   "license": "ISC",

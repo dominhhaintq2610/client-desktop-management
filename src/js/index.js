@@ -6,7 +6,7 @@ script.type = 'text/javascript';
 if (process.platform === 'darwin') {
   script.src = "../js/update-darwin.js"
 } else {
-  script.src = "js/mobile_version.js"
+  script.src = "../js/update-win32.js"
 }
 
 body.appendChild(script)

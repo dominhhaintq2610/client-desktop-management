@@ -16,7 +16,10 @@ const createWindow = () => {
   })
 
   win.loadFile('./src/pages/index.html')
-  win.webContents.openDevTools()
+  
+  if (process.env.NODE_ENV == 'development') {
+    win.webContents.openDevTools()
+  }
 }
 
 app.whenReady().then(() => {
@@ -28,12 +31,11 @@ ipcMain.on('get-app-path', (event, args) => {
 })
 
 ipcMain.on('get-parent-root-path', (event, args) => {
-  console.log(process.env.NODE_ENV)
   if (process.env.NODE_ENV == 'development') {
     event.returnValue = path.join(app.getAppPath(), '/..')
   } else {
     event.returnValue = process.platform === 'win32' ?
-      path.join(app.getAppPath(), '/../../../..') :
+      path.join(app.getAppPath(), '/../../..') :
       path.join(app.getAppPath(), '/../../../../..')
   }
 })
