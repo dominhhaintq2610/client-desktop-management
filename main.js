@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, Tray, Menu } = require('electron')
 const path = require('path');
 
-let win = null;
+let win = null
+let isQuiting = false
+const gotTheLock = app.requestSingleInstanceLock()
 
 //TODO
 app.commandLine.appendSwitch('ignore-certificate-errors')
@@ -24,6 +26,13 @@ const createWindow = () => {
   if (process.env.NODE_ENV == 'development') {
     win.webContents.openDevTools()
   }
+
+  win.on('close', function (event) {
+    if (!isQuiting) {
+       event.preventDefault()
+       win.hide()
+    }
+ })
 }
 
 const createSystemTray = () => {
@@ -53,13 +62,31 @@ const createSystemTray = () => {
   appIcon.setContextMenu(contextMenu);
 }
 
-app.whenReady().then(() => {
-  createWindow()
-  createSystemTray()
-})
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (win) {
+      if (win.isMinimized())  {
+         win.restore()
+      }
+      win.show()
+      win.focus()
+    }
+  })
+
+  app.whenReady().then(() => {
+    createWindow()
+    createSystemTray()
+  })
+}
 
 app.on('activate', () => {
   win.show()
+})
+
+app.on('before-quit', function () {
+  isQuiting = true
 })
 
 ipcMain.on('get-app-path', (event, args) => {
