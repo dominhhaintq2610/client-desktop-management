@@ -5,7 +5,6 @@ let win = null
 let isQuiting = false
 const gotTheLock = app.requestSingleInstanceLock()
 
-//TODO
 app.commandLine.appendSwitch('ignore-certificate-errors')
 const createWindow = () => {
   win = new BrowserWindow({
@@ -17,7 +16,7 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
-      webSecurity: false //TODO
+      webSecurity: false
     }
   })
 
@@ -36,7 +35,7 @@ const createWindow = () => {
 }
 
 const createSystemTray = () => {
-  const iconPath = path.join(__dirname, './src/images/icon.png');
+  const iconPath = path.join(__dirname, './src/images/icon-tray.png');
   appIcon = new Tray(iconPath);
 
   let contextMenu = Menu.buildFromTemplate([

@@ -180,7 +180,7 @@ function showProgress(receivedBytes, totalBytes) {
 function unzip() {
   setContent('Unzip files...')
 
-  exec(`unzip -o ${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME} -d ${PARENT_FOLDER_PATH}`, (error) => {
+  exec(`unzip -o '${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME}' -d '${PARENT_FOLDER_PATH}'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`)
       return
@@ -194,7 +194,7 @@ function unzip() {
 function openClientDesktop() {
   setContent('Start Client Desktop...')
 
-  exec(`open ${CLIENT_FOLDER_PATH}/Client-Desktop.app`, (error) => {
+  exec(`open '${CLIENT_FOLDER_PATH}/Client-Desktop.app'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return;
@@ -207,7 +207,7 @@ function openClientDesktop() {
 function removeFiles() {
   setContent('Remove unused files...')
 
-  exec(`rm -rf ${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME} && rm -rf ${MANAGE_FOLDER_PATH}/__MACOSX && rm ${INFO_FILE_TMP_PATH}`, (error) => {
+  exec(`rm -rf '${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME}' && rm -rf '${MANAGE_FOLDER_PATH}/__MACOSX' && rm '${INFO_FILE_TMP_PATH}'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`);
     }
@@ -219,7 +219,7 @@ function removeFiles() {
 function copyIniFile() {
   setContent("Copy ini file...")
 
-  exec(`cp ${INFO_FILE_PATH} ${INFO_FILE_TMP_PATH}`, (error) => {
+  exec(`cp '${INFO_FILE_PATH}' '${INFO_FILE_TMP_PATH}'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return;
@@ -232,7 +232,7 @@ function copyIniFile() {
 function revertIniFile() {
   setContent("Revert ini file...")
 
-  exec(`cp ${INFO_FILE_TMP_PATH} ${INFO_FILE_PATH}`, (error) => {
+  exec(`cp '${INFO_FILE_TMP_PATH}' '${INFO_FILE_PATH}'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return

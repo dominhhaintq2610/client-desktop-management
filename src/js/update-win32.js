@@ -166,7 +166,7 @@ function download() {
 function unzip() {
   setContent('Unzip files...')
 
-  exec(`powershell Expand-Archive ${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME} -DestinationPath ${PARENT_FOLDER_PATH} -Force`, {'maxBuffer': 1024 * 300000}, (error) => {
+  exec(`powershell Expand-Archive '${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME}' -DestinationPath '${PARENT_FOLDER_PATH}' -Force`, {'maxBuffer': 1024 * 300000}, (error) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return;
@@ -193,7 +193,7 @@ function killClientDesktop() {
 function openClientDesktop() {
   setContent('Start Client Desktop...')
 
-  exec(`powershell start ${CLIENT_FOLDER_PATH}/Client-Desktop.exe`, (error) => {
+  exec(`powershell start '${CLIENT_FOLDER_PATH}/Client-Desktop.exe'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return;
@@ -206,7 +206,7 @@ function openClientDesktop() {
 function copyIniFile() {
   setContent("Copy ini file...")
 
-  exec(`powershell copy ${INFO_FILE_PATH} ${INFO_FILE_TMP_PATH}`, (error, stdout, stderr) => {
+  exec(`powershell copy '${INFO_FILE_PATH}' '${INFO_FILE_TMP_PATH}'`, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`)
       return
@@ -219,7 +219,7 @@ function copyIniFile() {
 function revertIniFile() {
   setContent("Revert ini file...")
 
-  exec(`powershell copy ${INFO_FILE_TMP_PATH} ${INFO_FILE_PATH}`, (error) => {
+  exec(`powershell copy '${INFO_FILE_TMP_PATH}' '${INFO_FILE_PATH}'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`)
       return
@@ -232,7 +232,7 @@ function revertIniFile() {
 function removeFiles() {
   setContent('Remove unused files...')
 
-  exec(`powershell del ${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME} && powershell del ${INFO_FILE_TMP_PATH}`, (error) => {
+  exec(`powershell del '${MANAGE_FOLDER_PATH}/${CLIENT_ZIP_TMP_NAME}' && powershell del '${INFO_FILE_TMP_PATH}'`, (error) => {
     if (error) {
       console.error(`exec error: ${error}`)
     }
