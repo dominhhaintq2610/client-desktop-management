@@ -64,7 +64,7 @@ function onSchedule() {
 
 function printSchedule() {
   let time = getAutoUpdateTime()
-  document.getElementsByClassName('daily-schedule')[0].textContent = `Daily schedule: ${time}`
+  document.getElementsByClassName('daily-schedule')[0].textContent = `更新確認時刻: ${time}`
 
   setTimeout(printSchedule, 1000)
 }
@@ -113,7 +113,11 @@ function checkVersion() {
   api.call().get(`/version?app_version=${version}&os=${process.platform}`)
     .then(response => {
       if (response.status == 204) {
-        setContent("The current version is latest!")
+        setContent("現在のバージョンは最新です。")
+
+        setTimeout(function() {
+          ipcRenderer.send('close-app')
+        }, 3000)
       } else {
         downloadUrl = response.data.url
         console.log(downloadUrl)
@@ -123,6 +127,10 @@ function checkVersion() {
     .catch(error => {
       console.log(error)
       setContent("Cannot get new version")
+
+      setTimeout(function() {
+        ipcRenderer.send('close-app')
+      }, 3000)
     })
 
   return
@@ -179,7 +187,7 @@ function unzip() {
 
 function showProgress(receivedBytes, totalBytes) {
   let percent = Math.round((receivedBytes * 100) / totalBytes)
-  setContent(`Download: ${percent}%`)
+  setContent(`ダウンロード中: ${percent}%`)
 }
 
 function killClientDesktop() {
@@ -200,6 +208,10 @@ function openClientDesktop() {
     }
 
     setContent("Update successfully!")
+
+    setTimeout(function() {
+      ipcRenderer.send('close-app')
+    }, 3000)
   });
 }
 
