@@ -104,7 +104,7 @@ function updateVersion(step) {
 }
 
 function checkVersion() {
-  setContent("Checking...")
+  setContent("バージョン確認中･･･")
 
   let rawData = fs.readFileSync(PACKAGE_JSON_PATH)
   let data = JSON.parse(rawData)
